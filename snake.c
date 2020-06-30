@@ -124,3 +124,52 @@ void placeFood(GameWindow* GW, Snake* S){
     S->foodLoc = foodLoc;
     wmvaddch(GW->W,foodLoc->y,foodLoc->x,ACS_DIAMOND);
 }
+Snake* newSnake(int xMax, int yMax){
+
+    Snake *S = calloc(1,sizeof(Snake));
+    if(!S){
+        printf("Allocation of snake failed!");
+        exit(1);
+    }
+
+    Boundaries *b = calloc(1,sizeof(Boundaries));
+    if(!b){
+        printf("Allocation of boundaries failed!");
+        exit(1);
+    }
+    b->x = xMax, b->y = yMax;
+    S->bounds = b;
+
+    CoordLL* first = calloc(1,sizeof(CoordLL));
+    if(!first){
+        printf("Allocation of coordinate array failed!");
+        exit(1);
+    }
+    first->next = first->prev = NULL;
+
+    Coord* coord = calloc(1,sizeof(Coord));
+    if(!coord){
+        printf("Allocation of coordinate failed!");
+        exit(1);
+    }
+    first->loc = coord;
+
+    // Snake will start in the center, moving right, and with length 1
+    first->loc->x = (xMax+1)/2;
+    first->loc->y = (yMax+1)/2;
+    S->first = S->last = first;
+    S->lastDir = KEY_RIGHT;
+
+    return(S);
+}
+
+void delSnake(Snake* S){
+    CoordLL* temp;
+    while(S->first){
+        temp = S->first;
+        S->first = S->first->next;
+        free(temp);
+    }
+    free(S->bounds);
+    free(S);
+}
