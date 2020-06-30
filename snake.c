@@ -87,3 +87,40 @@ bool moveSnake(GameWindow* GW, Snake* S, int choice){
     }
     return true;
 }
+bool reachingFood(Snake* S, int dir){
+    switch(dir){
+        case KEY_UP:
+            return S->foodLoc->x == S->first->loc->x &&
+                S->foodLoc->y == (S->first->loc->y-1);
+            break;
+        case KEY_DOWN:
+            return S->foodLoc->x == S->first->loc->x &&
+                S->foodLoc->y == (S->first->loc->y+1);
+            break;
+        case KEY_LEFT:
+            return S->foodLoc->x == S->first->loc->x-1 &&
+                S->foodLoc->y == (S->first->loc->y);
+            break;
+        case KEY_RIGHT:
+            return S->foodLoc->x == S->first->loc->x+1 &&
+                S->foodLoc->y == (S->first->loc->y);
+            break;
+    }
+    return false;
+}
+
+void placeFood(GameWindow* GW, Snake* S){
+    Coord *foodLoc = calloc(1,sizeof(Coord));
+    if(!foodLoc){
+        printf("Allocation of food coordinate failed!");
+        exit(1);
+    }
+    do{
+        foodLoc->x = (rand() % (S->bounds->x-1)) + 1;
+        foodLoc->y = (rand() % (S->bounds->y-1)) + 1;
+    } while(GW->isOccupied[toOneD(foodLoc->y,foodLoc->x,S->bounds->x)]);
+
+    GW->isOccupied[toOneD(foodLoc->y,foodLoc->x,S->bounds->x)] = true;
+    S->foodLoc = foodLoc;
+    wmvaddch(GW->W,foodLoc->y,foodLoc->x,ACS_DIAMOND);
+}
