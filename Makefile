@@ -1,5 +1,5 @@
-snake: src/main.c src/snake.c src/lib/snake.h src/lib/main.h
-	gcc -lncurses src/main.c src/snake.c -o snake
+snake: main.c snake.c snake.h main.h
+	gcc -lncurses main.c snake.c -o snake
 
 clean:
 	rm -rf *.o a.out snake
